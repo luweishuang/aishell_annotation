@@ -1,4 +1,4 @@
-import user from './api/user.js'
+import user from './user'
 
 export default{
     user

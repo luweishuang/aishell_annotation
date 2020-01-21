@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AIShellAn.Server.Migrations
 {
     [DbContext(typeof(AIShellAnContext))]
-    [Migration("20191220100729_init")]
-    partial class init
+    [Migration("20200106180116_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,7 +19,7 @@ namespace AIShellAn.Server.Migrations
             modelBuilder
                 .HasAnnotation("Npgsql:PostgresExtension:uuid-ossp", ",,")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("AIShellAn.Server.Entities.AnnotationResult", b =>
@@ -28,6 +28,8 @@ namespace AIShellAn.Server.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("AnnotationResultType");
+
+                    b.Property<Guid>("AnnotationTaskId");
 
                     b.Property<string>("Content")
                         .HasColumnType("jsonb");
@@ -57,6 +59,8 @@ namespace AIShellAn.Server.Migrations
                     b.Property<DateTime>("CreateOn");
 
                     b.Property<DateTime?>("FinshedTime");
+
+                    b.Property<bool>("IsAnnotationTime");
 
                     b.Property<Guid>("ManagerId");
 
@@ -426,6 +430,8 @@ namespace AIShellAn.Server.Migrations
 
                     b.Property<DateTime>("CreatedOn");
 
+                    b.Property<bool>("IsManager");
+
                     b.HasKey("TeamId", "UserId");
 
                     b.HasIndex("UserId");
@@ -476,6 +482,19 @@ namespace AIShellAn.Server.Migrations
                     b.HasIndex("CreatorId");
 
                     b.ToTable("User");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("640d9acf-5197-44f3-8f94-f08437ed9179"),
+                            Active = true,
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Password = "7fef6171469e80d32c0559f88b377245",
+                            RealName = "系统管理员",
+                            Role = "系统管理员",
+                            Sex = 0,
+                            UserName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("AIShellAn.Server.Entities.AnnotationTask", b =>
@@ -483,11 +502,12 @@ namespace AIShellAn.Server.Migrations
                     b.HasOne("AIShellAn.Server.Entities.User", "Manager")
                         .WithMany("AnnotationTasks")
                         .HasForeignKey("ManagerId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("AIShellAn.Server.Entities.AnnotationTemplate", "AnnotationTemplate")
                         .WithMany("AnnotationTasks")
-                        .HasForeignKey("TemplateId");
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("AIShellAn.Server.Entities.AnnotationTemplateItem", b =>
@@ -495,7 +515,7 @@ namespace AIShellAn.Server.Migrations
                     b.HasOne("AIShellAn.Server.Entities.AnnotationTemplate", "AnnotationTemplate")
                         .WithMany("TemplateItems")
                         .HasForeignKey("AnnotationTemplateId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("AIShellAn.Server.Entities.DataPackage", b =>
@@ -503,11 +523,12 @@ namespace AIShellAn.Server.Migrations
                     b.HasOne("AIShellAn.Server.Entities.AnnotationTask", "AnnotationTask")
                         .WithMany("Packages")
                         .HasForeignKey("AnnotationTaskId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("AIShellAn.Server.Entities.User", "AnnotationUser")
                         .WithMany("DataPackages")
-                        .HasForeignKey("AnnotationUserId");
+                        .HasForeignKey("AnnotationUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("AIShellAn.Server.Entities.InspectionItemRecord", b =>
@@ -524,11 +545,13 @@ namespace AIShellAn.Server.Migrations
 
                     b.HasOne("AIShellAn.Server.Entities.InspectionPackageRecord", "InspectionPackageRecord")
                         .WithMany("InspectionItemRecords")
-                        .HasForeignKey("InspectionPackageRecordId");
+                        .HasForeignKey("InspectionPackageRecordId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("AIShellAn.Server.Entities.User", "InspectionUser")
                         .WithMany("InspectionItemRecords")
-                        .HasForeignKey("InspectionPackageRecordId");
+                        .HasForeignKey("InspectionPackageRecordId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("AIShellAn.Server.Entities.InspectionPackageRecord", b =>
@@ -536,24 +559,25 @@ namespace AIShellAn.Server.Migrations
                     b.HasOne("AIShellAn.Server.Entities.InspectionTask", "InspectionTask")
                         .WithMany("InspectionPackageRecords")
                         .HasForeignKey("InspectionTaskId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("AIShellAn.Server.Entities.DataPackage", "Package")
                         .WithMany("InspectionPackageRecords")
                         .HasForeignKey("PackageId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("AIShellAn.Server.Entities.InspectionTask", b =>
                 {
                     b.HasOne("AIShellAn.Server.Entities.AnnotationTask", "AnnotationTask")
                         .WithMany("InspectionTasks")
-                        .HasForeignKey("AnnotationTaskId");
+                        .HasForeignKey("AnnotationTaskId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("AIShellAn.Server.Entities.User", "Creator")
                         .WithMany("InspectionTasks")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("AIShellAn.Server.Entities.LongSpeechItem", b =>
@@ -565,7 +589,7 @@ namespace AIShellAn.Server.Migrations
                     b.HasOne("AIShellAn.Server.Entities.DataPackage", "Package")
                         .WithMany("LongSpeechItems")
                         .HasForeignKey("PackageId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("AIShellAn.Server.Entities.LongSpeechText", b =>
@@ -573,7 +597,7 @@ namespace AIShellAn.Server.Migrations
                     b.HasOne("AIShellAn.Server.Entities.LongSpeechItem", "LongSpeechItem")
                         .WithMany("Texts")
                         .HasForeignKey("LongSpeechItemId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("AIShellAn.Server.Entities.ShortSpeechItem", b =>
@@ -585,7 +609,7 @@ namespace AIShellAn.Server.Migrations
                     b.HasOne("AIShellAn.Server.Entities.DataPackage", "Package")
                         .WithMany("ShortSpeechItems")
                         .HasForeignKey("PackageId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("AIShellAn.Server.Entities.Team", b =>
@@ -593,7 +617,7 @@ namespace AIShellAn.Server.Migrations
                     b.HasOne("AIShellAn.Server.Entities.User", "Creator")
                         .WithMany("Teams")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("AIShellAn.Server.Entities.TeamAnnotationTask", b =>
@@ -626,7 +650,8 @@ namespace AIShellAn.Server.Migrations
                 {
                     b.HasOne("AIShellAn.Server.Entities.User", "Creator")
                         .WithMany("Members")
-                        .HasForeignKey("CreatorId");
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

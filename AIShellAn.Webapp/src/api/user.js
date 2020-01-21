@@ -17,8 +17,49 @@ export default {
     //获取用户信息
     getUserInfo() {
         return axios.request({
-            url: 'api/User/Get',
-            method: 'get'
+            url: 'api/v1/User/GetCurrentUser',
+            method: 'get',
+        })
+    },
+    getUserByUserName(username) {
+        return axios.request({
+            url: 'api/v1/User/GetByUserName/' + username,
+            method: 'get',
+        })
+    },
+    getUserByUserId(id) {
+        return axios.request({
+            url: 'api/v1/User/GetByUserId/' + id,
+            method: 'get',
+        })
+    },
+
+
+    getUserList({ userName, page, size }) {
+        return axios.request({
+            url: 'api/v1/User/List',
+            method: 'get',
+            params: { userName, page, size }
+        })
+    },
+    getRoleList() {
+        return axios.request({
+            url: 'api/v1/User/GetRoleList',
+            method: 'get',
+        })
+    },
+    addUser(user) {
+        return axios.request({
+            url: 'api/v1/User/Add',
+            data: user,
+            method: 'post'
+        })
+    },
+    updateUser(user) {
+        return axios.request({
+            url: 'api/v1/User/Update',
+            data: user,
+            method: 'post'
         })
     }
 }

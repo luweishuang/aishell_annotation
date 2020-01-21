@@ -24,6 +24,7 @@ namespace AIShellAn.Server.Entities
 
         public  ICollection<AnnotationTemplateItem> TemplateItems { get; set; }
 
+
         /// <summary>
         /// 创建时间
         /// </summary>

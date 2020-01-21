@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AIShellAn.Server.Migrations
 {
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,6 +17,7 @@ namespace AIShellAn.Server.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     ItemId = table.Column<Guid>(nullable: false),
                     AnnotationResultType = table.Column<int>(nullable: false),
+                    AnnotationTaskId = table.Column<Guid>(nullable: false),
                     CreateOn = table.Column<DateTime>(nullable: false),
                     SpendTime = table.Column<float>(nullable: false),
                     LoadingTime = table.Column<float>(nullable: false),
@@ -95,7 +96,7 @@ namespace AIShellAn.Server.Migrations
                         column: x => x.AnnotationTemplateId,
                         principalTable: "AnnotationTemplate",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -114,7 +115,8 @@ namespace AIShellAn.Server.Migrations
                     TaskStatus = table.Column<int>(nullable: false),
                     FinshedTime = table.Column<DateTime>(nullable: true),
                     Urgency = table.Column<int>(nullable: false),
-                    TaskScope = table.Column<int>(nullable: false)
+                    TaskScope = table.Column<int>(nullable: false),
+                    IsAnnotationTime = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -124,7 +126,7 @@ namespace AIShellAn.Server.Migrations
                         column: x => x.ManagerId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_AnnotationTask_AnnotationTemplate_TemplateId",
                         column: x => x.TemplateId,
@@ -151,7 +153,7 @@ namespace AIShellAn.Server.Migrations
                         column: x => x.CreatorId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -179,7 +181,7 @@ namespace AIShellAn.Server.Migrations
                         column: x => x.AnnotationTaskId,
                         principalTable: "AnnotationTask",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_DataPackage_User_AnnotationUserId",
                         column: x => x.AnnotationUserId,
@@ -224,7 +226,7 @@ namespace AIShellAn.Server.Migrations
                         column: x => x.CreatorId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -258,7 +260,8 @@ namespace AIShellAn.Server.Migrations
                 {
                     TeamId = table.Column<Guid>(nullable: false),
                     UserId = table.Column<Guid>(nullable: false),
-                    CreatedOn = table.Column<DateTime>(nullable: false)
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    IsManager = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -306,7 +309,7 @@ namespace AIShellAn.Server.Migrations
                         column: x => x.PackageId,
                         principalTable: "DataPackage",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -339,7 +342,7 @@ namespace AIShellAn.Server.Migrations
                         column: x => x.PackageId,
                         principalTable: "DataPackage",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -366,13 +369,13 @@ namespace AIShellAn.Server.Migrations
                         column: x => x.InspectionTaskId,
                         principalTable: "InspectionTask",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_InspectionPackageRecord_DataPackage_PackageId",
                         column: x => x.PackageId,
                         principalTable: "DataPackage",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -392,7 +395,7 @@ namespace AIShellAn.Server.Migrations
                         column: x => x.LongSpeechItemId,
                         principalTable: "LongSpeechItem",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -441,6 +444,11 @@ namespace AIShellAn.Server.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.InsertData(
+                table: "User",
+                columns: new[] { "Id", "Active", "Birthday", "CreatedOn", "CreatorId", "Email", "LastLoginTime", "NativePlace", "Password", "Phone", "RealName", "Role", "Sex", "UserName" },
+                values: new object[] { new Guid("640d9acf-5197-44f3-8f94-f08437ed9179"), true, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, null, "7fef6171469e80d32c0559f88b377245", null, "系统管理员", "系统管理员", 0, "admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AnnotationTask_ManagerId",

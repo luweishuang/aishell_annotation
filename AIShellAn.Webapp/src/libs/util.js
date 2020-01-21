@@ -1,8 +1,6 @@
 import Cookies from 'js-cookie'
-
 import config from '@/config'
 import { forEach, hasOneOf, objEqual } from '@/libs/tools'
-
 export const TOKEN_KEY = 'token'
 
 
@@ -182,7 +180,9 @@ const hasAccess = (access, route) => {
  */
 export const canTurnTo = (name, access, routes) => {
   const routePermissionJudge = (list) => {
+  
     return list.some(item => {
+     
       if (item.children && item.children.length) {
         return routePermissionJudge(item.children)
       } else if (item.name === name) {

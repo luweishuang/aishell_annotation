@@ -1,15 +1,16 @@
 # AIShellAnnotation
 
 #关于AIShell
-
+AIShel是一个xxxx公司, 为您提供数据标注服务等等等...
 
 
 
 ## 项目简介
 
+**AIShellAnnotation**是一个完整的业务系统，包含了长语音,短语音标注,基本的图像标注(矩形、多边形）。该系统以任务为基础，由任务管理员或项目经理上传标注任务数据，然后分配给各个团队去完成，每个团队各自管理成员。标注完成后由团队管理员或项目经理创建质检任务，最终验收通过后产出标注结果集。 系统包含了源数据从“进”系统到标注结果数据集“出”系统的整个流程，同时方便管理标注人员，还包含统计各团队、用户的相关数据。
+
 **AIShellAnnotation**是一个基于 ASP.NET Core 2 + Vue.js 的前后端分离的数据标注系统 。后端使用.NET Core 2 + Entity Framework Core 构建，前端则是目前流行的基于 Vue.js 的 iView框架。
 
-**AIShellAnnotation**是一个完整的业务系统，包含了长语音,短语音标注,基本的图像标注(矩形、多边形）。该系统以任务为基础，由任务管理员或项目经理上传标注任务数据，然后分配给各个团队去完成，每个团队各自管理成员。标注完成后由团队管理员或项目经理创建质检任务，最后验收通过后产出标注结果集。 系统包含了源数据从“进”系统到标注结果数据集“出”系统的整个流程，同时方便管理标注人员，还包含统计各团队、用户的相关数据。
 
 ## 为什么开源
 
@@ -23,14 +24,10 @@
 
 ## 在线体验(Demo)
 
-超级管理员：administrator 
-管理员：admin
-
-密码：111111
 
 地址：
 
-试试以不同用户名登录系统，可以体验不同角色的权限。
+
 
 
 ## 面向群体
@@ -52,7 +49,7 @@ AIShellAnnotation已经包含语音标注以及基础的图像标注功能，适
 
 ## 环境和工具
 
-1. Node.js(同时安装 npm 前端包管理工具)
+1. Node.js(同时安装 npm或yarn 前端包管理工具)
 2. Visual Studio 2017(15.8.8 或者以上版本)
 3. VS Code 或者其他前端开发工具
 4. git 管理工具
@@ -66,7 +63,6 @@ AIShellAnnotation已经包含语音标注以及基础的图像标注功能，适
 - AutoMapper
 - Entity Framework Core 2.0
 - .NET Core 依赖注入
-- Swagger UI
 - Vue.js(ES6 语法)
 - iView(基于 Vue.js 的 UI 框架)
 
@@ -87,7 +83,7 @@ npm install (建议使用yarn替代npm,使用yarn需要额外安装)
 
 ### 后端项目
 
-在Visual Studio 2017中打开解决方案[DncZeus.sln]。首先根据自己的开发环境(SQL Server数据库类型，本示例默认是SQL Server Localdb)修改配置文件`appsettings.json`中的数据库连接字符串，示例默认连接字符串为：
+在Visual Studio 2017中打开解决方案[AIShellAn.Server.sln]。首先根据自己的开发环境(SQL Server数据库类型，本示例默认是SQL Server Localdb)修改配置文件`appsettings.json`中的数据库连接字符串，示例默认连接字符串为：
 
 ```
 "ConnectionStrings": {
@@ -125,8 +121,13 @@ npm run dev
 ## 使用和授权
 
 AIShellAnnotation项目是一个开源项目，你可以直接基于本项目进行扩展或者二次开发，也可以修改其中的代码。
+如果您打算直接使用该平台,但又没有技术人员,可以联系AIShell
 
-**项目中用到的其它开源项目的组件或者**。
+**项目中用到的其它的组件或者插件**。
+iview-admin[https://github.com/iview/iview-admin]
+wavesurfer.js[https://wavesurfer-js.org/]
+gDBox.js
+
 
 
 
@@ -140,8 +141,6 @@ AIShellAnnotation项目是一个开源项目，你可以直接基于本项目进
 
 
 ##	维护日志
-
-
 
 ### v1.0.0
 

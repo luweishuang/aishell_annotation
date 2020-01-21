@@ -4,12 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AIShellAn.Server.Entities;
+using AIShellAn.Server.IServices;
+using AIShellAn.Server.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -39,10 +43,11 @@ namespace AIShellAn.Server
             #region 配置数据库
 
             var sqlConnectionString = Configuration.GetConnectionString("PostgreSql");
-            services.AddDbContext<AIShellAnContext>(options =>
-                options.UseNpgsql(
-                    sqlConnectionString
-                )
+            services.AddDbContextPool<AIShellAnContext>(options =>
+
+                //后面的warning配置意义是:将默认行为更改为在执行客户端评估时引发异常或不执行任何操作
+                //具体描述请看:https://docs.microsoft.com/zh-cn/ef/core/querying/client-eval#previous-versions
+                options.UseNpgsql(sqlConnectionString).ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.QueryClientEvaluationWarning)),4
             );
             #endregion
 
@@ -95,6 +100,24 @@ namespace AIShellAn.Server
 
             #endregion
 
+            #region 配置AutoMapper
+            var mappingConfig = new MapperConfiguration(mc =>
+               {
+                   mc.AddProfile(new MappingProfile());
+               });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
+            #endregion
+
+
+            #region 依赖注入Services
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITeamService, TeamService>();
+            #endregion
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -109,6 +132,8 @@ namespace AIShellAn.Server
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+           
 
 
             #region 配置跨域

@@ -20,5 +20,7 @@ namespace AIShellAn.Server.Entities
         /// 创建时间
         /// </summary>
         public DateTime CreatedOn { get; set; }
+
+        public bool IsManager { get; set; } // 该成员是否是团队管理员
     }
 }

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 import { getToken } from '@/libs/util'
-
+import iview from 'view-design'
 
 //配置请求的header信息
 axios.defaults.headers = {
@@ -11,7 +11,6 @@ axios.defaults.headers = {
 class HttpRequest {
   constructor (baseUrl = baseURL) {
     this.baseUrl = baseUrl
-    this.queue = {}
   }
   getInsideConfig () {
     const config = {
@@ -22,14 +21,11 @@ class HttpRequest {
     }
     return config
   }
-  destroy (url) {
-    delete this.queue[url]
-    
-  }
+ 
   interceptors (instance, url) {
     // 请求拦截
     instance.interceptors.request.use(config => {
-      this.queue[url] = true
+    
       let token=getToken();
        // 判断是否存在token，如果存在的话，则每个http header都加上token
       if (token) { 
@@ -41,21 +37,30 @@ class HttpRequest {
       return config
     }, error => {
        //可以在此处添加错误处理，记录本地日志等操作
+       
       return Promise.reject(error)
     })
 
    
     // 响应拦截
     instance.interceptors.response.use(res => {
-      this.destroy(url)
-      const { data, status } = res
-      return { data, status }
+      const { data, status } = res;
+      //Todo:判断是否无权限,或者其他错误 然后提示用户
+      
+      return data;
+     
     }, error => {
 
       //可以在此处添加错误处理，记录本地日志等操作
-      this.destroy(url);
+      iview.Modal.error({
+        title:"系统警告",
+        content:"服务器出现异常,请联系管理员!"
+      })
       return Promise.reject(error)
-    })
+    });
+
+
+
   }
   request (options) {
     const instance = axios.create();

@@ -43,6 +43,56 @@ import main from '@/components/main'
       }
     ]
   },
+
+  {
+    path: '/',
+    name: 'sysManager',
+    redirect: '/sysManager',
+    component: main,
+    meta: {
+      icon: 'md-hammer',
+      title: '系统设置',
+      access:['系统管理员','项目经理','团队管理员']
+    },
+    children: [
+      {
+        path: '/changePassword',
+        name: 'changePassword',
+        meta: {
+          hideInMenu: true,
+          title: '修改密码',
+          notCache: true,
+          icon: 'md-home'
+        },
+        component: () => import('@/views/sysManager/userManager/editInfo')
+      },
+      {
+        path: '/userManager',
+        name: 'userManager',
+        meta: {
+          hideInMenu: false,
+          title: '用户管理',
+          notCache: true,
+          icon: 'md-people',
+          access:['系统管理员']
+        },
+        component: () => import('@/views/sysManager/userManager/index')
+      },
+      {
+        path: '/templateManager',
+        name: 'templateManager',
+        meta: {
+          hideInMenu: false,
+          title: '标注模板管理',
+          notCache: true,
+          icon: 'md-book',
+          access:['系统管理员']
+        },
+        component: () => import('@/views/sysManager/templateManager/index')
+      },
+    ]
+  },
+
   {
     path: '/401',
     name: 'error_401',

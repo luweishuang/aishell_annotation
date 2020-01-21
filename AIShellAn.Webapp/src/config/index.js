@@ -14,8 +14,8 @@ export default {
    */
   baseUrl: {
     dev: 'https://localhost:5001',  //开发环境
-    pro: 'http://47.93.245.192:8080' //生产环境
-  //pro: 'http://47.93.245.192:909'
+   // pro: 'http://47.93.245.192:8080' //生产环境
+  pro: 'http://47.93.245.192:909'
   },
   /**
    * @description 默认打开的首页的路由name值，默认为home

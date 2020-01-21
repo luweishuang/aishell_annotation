@@ -21,7 +21,7 @@
     "moment": "^2.24.0",
     "view-design": "^4.0.0",
     "vue": "^2.5.17",
-    "vue-router": "^3.0.1",
+    "vue-router": "^3.1.1",
     "vue-waves": "^0.1.1",
     "vuex": "^3.0.1",
     "wavesurfer.js": "^3.2.0"
@@ -54,10 +54,11 @@
       "vue/no-unused-vars": "off",
       "vue/no-parsing-error": "off",
       "vue/no-unused-components": "off",
-      "vue/valid-template-root":"off",
-      "no-unused-vars":"off",
-      "no-undef":"off",
-      "no-empty":"off"
+      "vue/valid-template-root": "off",
+      "no-unused-vars": "off",
+      "no-undef": "off",
+      "no-empty": "off",
+      "no-unexpected-multiline": "off"
     }
   },
   "postcss": {

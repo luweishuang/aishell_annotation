@@ -23,6 +23,9 @@ namespace AIShellAn.Server.Entities
 
         public AnnotationResultType AnnotationResultType { get; set; }
 
+
+        public  Guid AnnotationTaskId { get; set; }
+
         /// <summary>
         /// 创建时间
         /// </summary>

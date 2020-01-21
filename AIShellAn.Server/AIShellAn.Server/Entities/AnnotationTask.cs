@@ -85,8 +85,10 @@ namespace AIShellAn.Server.Entities
         /// </summary>
         public TaskScope TaskScope { get; set; }
 
-
-        
+        /// <summary>
+        /// 如果是短音频任务,则有该选择,是否标注时间
+        /// </summary>
+        public bool IsAnnotationTime { get; set; }  
 
         public ICollection<TeamAnnotationTask> TeamTask { get; set; }
 

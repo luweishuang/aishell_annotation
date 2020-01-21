@@ -12,7 +12,6 @@ import {
   localRead
 } from '@/libs/util'
 import beforeClose from '@/router/before-close'
-import {addOperate} from '@/api/operate'
 import router from '@/router'
 import routers from '@/router/routers'
 import config from '@/config'

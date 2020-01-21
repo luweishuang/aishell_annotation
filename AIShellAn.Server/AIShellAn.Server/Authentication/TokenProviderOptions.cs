@@ -19,7 +19,7 @@ namespace AIShellAn.Server
         /// <summary>
         /// 过期时间
         /// </summary>
-        public TimeSpan Expiration { get; set; } = TimeSpan.FromMinutes(180);
+        public TimeSpan Expiration { get; set; } = TimeSpan.FromHours(24);
 
         public SigningCredentials SigningCredentials { get; set; }
     }

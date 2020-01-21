@@ -52,5 +52,3 @@ new Vue({
 localForage.config({
   name:"data-annotation",
 });
-//定义本地存储组件全局变量
-Vue.prototype.$localForage=localForage;

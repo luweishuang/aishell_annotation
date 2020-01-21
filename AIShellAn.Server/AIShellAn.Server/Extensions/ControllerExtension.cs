@@ -12,14 +12,28 @@ namespace AIShellAn.Server
     {
         public static Guid GetCurrentUserId(this ControllerBase controller)
         {
-            string userId = controller.HttpContext.User.FindFirst("UserId").Value;
-            return Guid.Parse(userId);
+            string userId = controller.HttpContext.User.FindFirst("UserId")?.Value;
+            if(string.IsNullOrEmpty(userId))
+            {
+                return Guid.Empty;
+            }
+            else
+            {
+                return Guid.Parse(userId);
+            }
+           
         }
 
         public static string GetCurrentUserName(this ControllerBase controller)
         {
             string userName = controller.HttpContext.User.FindFirst("UserName").Value;
             return userName;
+        }
+
+        public static string GetCurrentUserRole(this ControllerBase controller)
+        {
+            string role = controller.HttpContext.User.FindFirst("Role").Value;
+            return role;
         }
 
         public static bool IsInRole(this ControllerBase controller, DbContext db,string role)

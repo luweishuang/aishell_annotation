@@ -7,9 +7,9 @@ namespace AIShellAn.Server.ViewModels
 {
     public class ResponseModel<T>
     {
-        public int code { get; set; }
+        public bool success { get; set; }
         public T data { get; set; }
         public string message { get; set; }
-        
+
     }
 }

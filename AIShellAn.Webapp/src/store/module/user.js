@@ -1,6 +1,6 @@
-import { login, logout, getUserInfo } from '@/api/user'
 import { setToken, getToken } from '@/libs/util'
 import { setTagNavListInLocalstorage} from '@/libs/util'
+import userApi from '@/api/user'
 export default {
   state: {
     userName: '',
@@ -8,7 +8,7 @@ export default {
     userId: '',
     avatorImgPath:'',
     token: getToken(),
-    role:'',
+    role:[],
   },
   mutations: {
     setAvator (state, avatorPath) {
@@ -33,28 +33,23 @@ export default {
   },
   actions: {
     // 登录
-    Login ({ commit }, {userName, password}) {
+    handleLogin ({ state,commit }, {userName, password}) {
       userName = userName.trim()
       return new Promise((resolve, reject) => {
-        login({
-          userName,
-          password
-        }).then(res => {
-          const data = res.data;
-          if(data.Status){
-            commit('setToken', data.access_token);
-            resolve(res)
+        userApi.login({userName, password}).then(res => {
+          
+          if(res.Status){
+            commit('setToken', res.access_token);
+            resolve(res);
           }
           else{
             reject(res);
           }
-        }).catch(err => {
-         
         })
       })
     },
     // 退出登录
-    LogOut ({ state, commit }) {
+    handleLogOut ({ state, commit }) {
       return new Promise((resolve, reject) => {
         //退出登录，请求服务器，清除session
         // logout(state.token).then(() => {
@@ -67,7 +62,6 @@ export default {
         // })
         // 如果你的退出登录无需请求接口，则可以直接使用下面三行代码而无需使用logout调用接口
         commit('setToken', '');
-        commit('setRole', []);
         setTagNavListInLocalstorage([]);
         resolve();
       })
@@ -76,13 +70,17 @@ export default {
     getUserInfo ({ state, commit }) {
       return new Promise((resolve, reject) => {
         try {
-          getUserInfo().then(res => {
-            const data = res.data
-            commit('setUserName', data.userName)
-            commit('setUserId', data.id)
-            commit('setRole',data.role)
-            commit('setHasGetInfo', true)
-            resolve(data)
+          userApi.getUserInfo().then(res => {
+            if(res.success){
+              const data = res.data;
+              commit('setUserName', data.userName)
+              commit('setName', data.realName)
+              commit('setUserId', data.id)
+              commit('setRole',data.role.split(','));
+              resolve(data);
+            }else{
+              reject(res)
+            }
           }).catch(err => {
             reject(err)
           })

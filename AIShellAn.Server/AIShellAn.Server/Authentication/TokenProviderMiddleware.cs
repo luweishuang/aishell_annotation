@@ -1,4 +1,5 @@
 ﻿using AIShellAn.Server.Entities;
+using AIShellAn.Server.IServices;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,6 @@ namespace AIShellAn.Server
     {
         private readonly RequestDelegate _next;
         private readonly TokenProviderOptions _options;
-        private DbContext db;
         private ILogger log;
         public TokenProviderMiddleware(
             RequestDelegate next,
@@ -43,12 +43,12 @@ namespace AIShellAn.Server
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async System.Threading.Tasks.Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext context,IUserService userService)
         {
 
             try
             {
-                this.db = context.RequestServices.GetService<AIShellAnContext>();
+               
                 context.Features.Set<IAuthenticationFeature>(new AuthenticationFeature
                 {
                     OriginalPath = context.Request.Path,
@@ -88,14 +88,13 @@ namespace AIShellAn.Server
                     await ReturnBadRequest(context);
                     return;
                 }
-
-                await GenerateAuthorizedResult(context);
+                await GenerateAuthorizedResult(context, userService);
             }
             catch (Exception ex)
             {
+                //在这里可以捕捉全局异常
                 context.Response.StatusCode = 500;
-                
-                log.LogError(ex.ToString());
+                log.WriteLog(LogLevel.Error, "全局异常", ex);
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(new
                 {
                     Status = false,
@@ -112,7 +111,7 @@ namespace AIShellAn.Server
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private async System.Threading.Tasks.Task GenerateAuthorizedResult(HttpContext context)
+        private async Task GenerateAuthorizedResult(HttpContext context,IUserService userService)
         {
             Stream stream = context.Request.Body;
             byte[] buffer = new byte[context.Request.ContentLength.Value];
@@ -121,7 +120,9 @@ namespace AIShellAn.Server
             dynamic user = JsonConvert.DeserializeObject(content);
             string userName = user.userName;
             string password = user.password;
-            var identity = await GetIdentity(userName, password);
+
+
+            var identity = await GetIdentity(userService, userName, password);
             if (identity == null)
             {
                 //ToDo：这里需要根据实际情况返回用户名为空或者密码错误等信息
@@ -131,7 +132,8 @@ namespace AIShellAn.Server
 
             // Serialize and return the response
             context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(GetJwt(userName));
+
+            await context.Response.WriteAsync(GetJwt(userService, userName));
         }
 
         /// <summary>
@@ -140,35 +142,28 @@ namespace AIShellAn.Server
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        private Task<ClaimsIdentity> GetIdentity(string username, string password)
+        private async Task<ClaimsIdentity> GetIdentity(IUserService userService, string username, string password)
         {
-            var isValidated = Auth(username, password);
+            var isValidated = Auth(userService,username, password);
             if (isValidated)
             {
-                return System.Threading.Tasks.Task.FromResult(new ClaimsIdentity(new System.Security.Principal.GenericIdentity(username, "Token"), new Claim[] { }));
+                return await Task.FromResult(new ClaimsIdentity(new System.Security.Principal.GenericIdentity(username, "Token"), new Claim[] { }));
             }
-            return System.Threading.Tasks.Task.FromResult<ClaimsIdentity>(null);
+            return await Task.FromResult<ClaimsIdentity>(null);
         }
 
 
-        private bool Auth(string username, string password)
+        private bool Auth(IUserService userService, string username, string password)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 return false;
             }
 
-            if(password.GetMD5HashCode()==db.Set<User>().Where(u=>u.UserName=="admin").Select(u=>u.Password).FirstOrDefault())
-            {
-                return true;
-            }
-
-
             var md5Pass = password.GetMD5HashCode();
-            User userModel = db.Set<User>().Where(user => user.UserName == username.Trim()&&user.Active).FirstOrDefault();
+            var userModel =   userService.QueryByUserName(username.Trim());
 
-
-            if (userModel == null)
+            if (userModel == null||!userModel.Active)
             {
                 return false;
             }
@@ -177,14 +172,14 @@ namespace AIShellAn.Server
             //如果是开发环境,随便输个密码就可以登录
             return true;
 #else
-            if (userModel.Password == md5Pass)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+                    if (userModel.Password == md5Pass)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
 #endif
         }
 
@@ -208,25 +203,26 @@ namespace AIShellAn.Server
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
-        private string GetJwt(string username)
+        private string GetJwt(IUserService userService, string username)
         {
             var now = DateTime.UtcNow;
-            User user = db.Set<User>().Where(u => u.UserName == username.Trim()).FirstOrDefault();
+            var user = userService.QueryByUserName(username.Trim());
+
             var roles = string.Join(",", user.Role);
             var claims = new Claim[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, now.ToUniversalTime().ToString(),
-                          ClaimValueTypes.Integer64),
-                //姓名
-                new Claim(ClaimTypes.Name,user.RealName),
-                //用户名
-                 new Claim(ClaimTypes.Name,user.UserName),
-                 //Id
-                new Claim("UserId",user.Id.ToString()),
-                //角色
-                new Claim("Role",roles),
+                        new Claim(JwtRegisteredClaimNames.Sub, username),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim(JwtRegisteredClaimNames.Iat, now.ToUniversalTime().ToString(),
+                                  ClaimValueTypes.Integer64),
+                        //姓名
+                        new Claim(ClaimTypes.Name,user.RealName),
+                        //用户名
+                         new Claim(ClaimTypes.Name,user.UserName),
+                         //Id
+                        new Claim("UserId",user.Id.ToString()),
+                        //角色
+                        new Claim("Role",roles),
             };
 
             var jwt = new JwtSecurityToken(
@@ -242,7 +238,7 @@ namespace AIShellAn.Server
             {
                 Status = true,
                 access_token = encodedJwt,
-                userName=user.UserName,
+                userName = user.UserName,
                 name = user.RealName,
                 userId = user.Id,
                 role = roles,

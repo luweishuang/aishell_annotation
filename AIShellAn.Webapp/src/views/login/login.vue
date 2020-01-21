@@ -7,7 +7,7 @@
     <div class="login-con">
       <Card icon="log-in" title="欢迎登录" :bordered="false">
         <div class="form-con">
-          <login-form @on-success-valid="handleSubmit"></login-form>
+          <login-form @on-success-valid="login"></login-form>
           <p class="login-tip">输入分配的用户名和密码</p>
         </div>
       </Card>
@@ -25,21 +25,19 @@ export default {
   methods: {
     ...mapActions([
       'handleLogin',
-      'getUserInfo'
     ]),
-    handleSubmit ({ userName, password }) {
+    login ({ userName, password }) {
       let _this=this;
       this.handleLogin({ userName, password }).then(res => {
-         _this.getUserInfo().then(res => {
-          _this.$router.push({
+          if(res.Status){
+          
+              _this.$router.push({
             name: _this.$config.homeName
           })
-        })
-       }).catch(err => {
-            _this.$Message.error({
-              content:err.data.Message
-            });
-        })
+          }
+       }).catch(err=>{
+         _this.$Message.error(err.data.Message);
+       })
     }
   }
 }

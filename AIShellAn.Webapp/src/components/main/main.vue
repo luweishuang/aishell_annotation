@@ -17,7 +17,7 @@
          
         
           <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>
-            <span style="margin-right: 10px;">欢迎：{{this.$store.state.user.userName}} [{{this.$store.state.user.role.join(',')}}]</span>
+            <span style="margin-right: 10px;">欢迎：{{this.$store.state.user.name}} [{{this.$store.state.user.role.join(',')}}]</span>
         </header-bar>
       </Header>
       <Content class="main-content-con">
@@ -49,7 +49,6 @@ import minLogo from '@/assets/images/logo-min.png'
 import maxLogo from '@/assets/images/logo.png'
 import './main.less'
 export default {
-    inject: ["reload"],
   name: 'Main',
   components: {
     SideMenu,
