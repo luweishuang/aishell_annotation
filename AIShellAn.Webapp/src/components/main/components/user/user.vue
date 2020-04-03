@@ -4,8 +4,9 @@
       <Avatar :src="userAvator"/>
       <Icon :size="18" type="md-arrow-dropdown"></Icon>
       <DropdownMenu slot="list" >
-         <DropdownItem name="editInfo">修改密码</DropdownItem>
-        <DropdownItem name="logout">退出登录</DropdownItem>
+         <DropdownItem name="personal"> <Icon type="md-contact" /> 个人中心</DropdownItem>
+         <DropdownItem name="setting"><Icon type="md-cog" /> 设置</DropdownItem>
+        <DropdownItem name="logout"><Icon type="md-log-out" /> 退出登录</DropdownItem>
       </DropdownMenu>
     </Dropdown>
    

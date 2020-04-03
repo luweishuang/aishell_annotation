@@ -3,6 +3,7 @@ using AIShellAn.Server.IServices;
 using AIShellAn.Server.ViewModels;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using PagedList;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,12 @@ namespace AIShellAn.Server.Services
     {
         private readonly AIShellAnContext _db;
         private readonly IMapper _mapper;
-        public UserService(AIShellAnContext db, IMapper mapper)
+        private readonly ILogger _logger;
+        public UserService(AIShellAnContext db, IMapper mapper, ILogger<UserService> loger)
         {
             _db = db;
             _mapper = mapper;
+            _logger = loger;
         }
 
 
@@ -40,15 +43,27 @@ namespace AIShellAn.Server.Services
             }
             else
             {
-                User user = _mapper.Map<User>(model);
-                if (_db.SaveChanges()>0)
+                try
                 {
-                    return true;
+                    User user = _mapper.Map<User>(model);
+                    user.CreatedOn = DateTime.Now;
+                    user.Active = true;
+                    _db.User.Add(user);
+                    if (_db.SaveChanges() > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
-                else
+                catch(Exception ex)
                 {
+                    LogError.WriteLog(_logger, "添加用户异常", ex);
                     return false;
                 }
+               
             }
             
         }

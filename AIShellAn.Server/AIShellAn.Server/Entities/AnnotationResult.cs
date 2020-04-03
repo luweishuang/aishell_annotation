@@ -21,6 +21,12 @@ namespace AIShellAn.Server.Entities
 
         public Guid ItemId { get; set; }
 
+
+        /// <summary>
+        /// 数据是否有效
+        /// </summary>
+        public bool? Effective { get; set; }
+
         public AnnotationResultType AnnotationResultType { get; set; }
 
 

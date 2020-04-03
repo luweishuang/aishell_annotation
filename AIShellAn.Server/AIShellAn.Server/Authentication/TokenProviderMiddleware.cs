@@ -94,7 +94,7 @@ namespace AIShellAn.Server
             {
                 //在这里可以捕捉全局异常
                 context.Response.StatusCode = 500;
-                log.WriteLog(LogLevel.Error, "全局异常", ex);
+                log.WriteLog("全局异常", ex);
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(new
                 {
                     Status = false,

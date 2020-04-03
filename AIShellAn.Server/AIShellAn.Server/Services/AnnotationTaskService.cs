@@ -121,7 +121,7 @@ namespace AIShellAn.Server.Services
                 catch (Exception e)
                 {
                     //写入日志
-                    _logger.WriteLog(LogLevel.Error, "删除标注任务的事务出现错误", e);
+                    _logger.WriteLog("删除标注任务的事务出现错误", e);
                     //回滚事务
                     tran.Rollback();
                     return false;

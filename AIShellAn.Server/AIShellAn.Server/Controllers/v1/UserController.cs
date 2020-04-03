@@ -111,6 +111,7 @@ namespace AIShellAn.Server.Controllers.v1
             else
             {
                 res.success = true;
+                res.message = "添加用户成功.";
             }
             return Ok(res);
         }
@@ -122,6 +123,18 @@ namespace AIShellAn.Server.Controllers.v1
             if(!string.IsNullOrEmpty( payload.UserName))
             {
                 pb.And(x => x.UserName.Contains(payload.UserName));
+            }
+            if (!string.IsNullOrEmpty(payload.Name))
+            {
+                pb.And(x => x.RealName.Contains(payload.Name));
+            }
+            if (payload.Sex.HasValue)
+            {
+                pb.And(x => x.Sex==payload.Sex.Value);
+            }
+            if (!string.IsNullOrEmpty(payload.Role))
+            {
+                pb.And(x => x.Role == payload.Role);
             }
             var userList= _userService.QueryByWhere(pb, payload.Page, payload.Size);
             ResponseModel<ListModel<UserModel>> res = new ResponseModel<ListModel<UserModel>>();
@@ -153,7 +166,9 @@ namespace AIShellAn.Server.Controllers.v1
             else
             {
                 res.success = true;
-               
+                res.message = "更新用户信息成功.";
+
+
             }
             return Ok(res);
         }

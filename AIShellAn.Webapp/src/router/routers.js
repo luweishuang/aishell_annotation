@@ -64,7 +64,7 @@ import main from '@/components/main'
           notCache: true,
           icon: 'md-home'
         },
-        component: () => import('@/views/sysManager/userManager/editInfo')
+        component: () => import('@/views/sysManager/userManager/changePassword')
       },
       {
         path: '/userManager',

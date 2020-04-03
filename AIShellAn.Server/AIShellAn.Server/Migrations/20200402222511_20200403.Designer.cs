@@ -3,15 +3,17 @@ using System;
 using AIShellAn.Server.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace AIShellAn.Server.Migrations
 {
     [DbContext(typeof(AIShellAnContext))]
-    partial class AIShellAnContextModelSnapshot : ModelSnapshot
+    [Migration("20200402222511_20200403")]
+    partial class _20200403
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,8 +35,6 @@ namespace AIShellAn.Server.Migrations
                         .HasColumnType("jsonb");
 
                     b.Property<DateTime>("CreateOn");
-
-                    b.Property<bool?>("Effective");
 
                     b.Property<Guid>("ItemId");
 
@@ -315,7 +315,7 @@ namespace AIShellAn.Server.Migrations
 
                     b.Property<DateTime>("CreateOn");
 
-                    b.Property<float>("Duration");
+                    b.Property<bool?>("Effective");
 
                     b.Property<int>("ItemStatus");
 
@@ -366,7 +366,7 @@ namespace AIShellAn.Server.Migrations
 
                     b.Property<DateTime>("CreateOn");
 
-                    b.Property<float>("Duration");
+                    b.Property<bool?>("Effective");
 
                     b.Property<int>("ItemStatus");
 

@@ -33,13 +33,12 @@ export default {
             method: 'get',
         })
     },
-
-
-    getUserList({ userName, page, size }) {
+    //获取用户列表
+    getUserList({ userName,name,sex,lastLoginTime,role, page, size }) {
         return axios.request({
             url: 'api/v1/User/List',
             method: 'get',
-            params: { userName, page, size }
+            params: { userName,name,sex,lastLoginTime,role, page, size }
         })
     },
     getRoleList() {

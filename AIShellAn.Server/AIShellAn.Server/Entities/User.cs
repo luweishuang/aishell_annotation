@@ -69,6 +69,11 @@ namespace AIShellAn.Server.Entities
         public DateTime? LastLoginTime { get; set; }
 
         /// <summary>
+        /// 最后登陆IP
+        /// </summary>
+        public string LastLoginIP { get; set; }
+
+        /// <summary>
         /// 出生年月
         /// </summary>
         public DateTime? Birthday { get; set; }

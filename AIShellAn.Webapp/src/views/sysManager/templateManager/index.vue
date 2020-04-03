@@ -16,7 +16,6 @@
           <Button type="error" style="margin-left:8px;"  @click="deleteTemplate(row)" >删除</Button>
         </div>
       </template>
-
     </Table>
 
     <Modal v-model="addtemplateModal" :title="modalTitle" :width="1000" :mask="true" :mask-closable="false">
@@ -34,7 +33,7 @@
          <FormItem
           v-for="(item, index) in template.items"
           :key="index"
-          :label="'标注项' + index+'：'"
+          :label="'标注项' + (index+1)+'：'"
         >
           <Row :gutter="6">
               <Col span="3" >
@@ -49,7 +48,7 @@
                    <Option :value="0">非必填</Option>
                </Select>
             </Col>
-            <Col span="4" >
+            <Col span="3" >
               <Input type="text" v-model="item.name"  placeholder="名称"></Input>
             </Col>
              
@@ -65,6 +64,9 @@
             </Col>
              <Col span="2"  v-if="item.type!='文本框'">
               <Input type="text" v-model="item.defaultValue" placeholder="默认值"></Input>
+            </Col>
+              <Col span="2" >
+              <Input type="text" v-model="item.order" placeholder="顺序"></Input>
             </Col>
             <Col span="2" >
               <Button type="error" @click="handleRemove(index)">删除</Button>

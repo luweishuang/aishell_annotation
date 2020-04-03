@@ -24,6 +24,9 @@ namespace AIShellAn.Server.Entities
         public Guid PackageId { get; set; }
         public DataPackage Package { get; set; }
 
+        //音频长度
+        public float Duration { get; set; }
+
         /// <summary>
         /// 数据序号
         /// </summary>
@@ -56,10 +59,7 @@ namespace AIShellAn.Server.Entities
         /// </summary>
         public ItemStatus ItemStatus { get; set; }
 
-        /// <summary>
-        /// 数据是否有效
-        /// </summary>
-        public bool? Effective { get; set; }  
+        
 
         /// <summary>
         /// 语音的原始文本

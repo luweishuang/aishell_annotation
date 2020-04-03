@@ -21,12 +21,22 @@ namespace AIShellAn.Server.Entities
         public Guid AnnotationTaskId { get; set; }
 
 
+
         public Guid PackageId { get; set; }
         public DataPackage Package { get; set; }
         /// <summary>
         /// 数据序号
         /// </summary>
         public int Number { get; set; }
+
+
+      
+
+
+        /// <summary>
+        /// 音频长度
+        /// </summary>
+        public float Duration { get; set; }
 
         /// <summary>
         /// 音频地址
@@ -55,10 +65,7 @@ namespace AIShellAn.Server.Entities
         /// </summary>
         public ItemStatus ItemStatus { get; set; }
 
-        /// <summary>
-        /// 数据是否有效
-        /// </summary>
-        public bool? Effective { get; set; }
+        
 
         /// <summary>
         /// 语音的原始文本
